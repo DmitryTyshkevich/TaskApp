@@ -85,7 +85,7 @@ async def enter_username_for_auth(message: types.Message, state: FSMContext) -> 
     username = message.text
     if db.get_user(username):
         AUTH_SESSION[user_id] = username
-        await message.reply("Вы успешно авторизовались", reply_markup=reply_keyboard)
+        await message.answer("Вы успешно авторизовались", reply_markup=reply_keyboard)
         await state.clear()
     else:
         await message.answer("Совпадений не найдено, пройдите регистрацию либо повторите попытку:", reply_markup=start_button)

@@ -28,7 +28,7 @@ class Database:
                 user_id INTEGER NOT NULL,
                 title TEXT NOT NULL,
                 description TEXT,
-                status INTEGER DEFAULT 1,
+                status INTEGER DEFAULT 0,
                 FOREIGN KEY (user_id) REFERENCES users(user_id)
             )
             """
@@ -56,7 +56,7 @@ class Database:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "INSERT INTO tasks (user_id, title, description, status) VALUES (?, ?, ?)",
+                "INSERT INTO tasks (user_id, title, description) VALUES (?, ?, ?)",
                 (user_id, title, description),
             )
 

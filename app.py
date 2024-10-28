@@ -2,6 +2,7 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from decouple import config
 from handlers.user_handler import user_router
+from handlers.task_handler import task_router
 
 
 TOKEN = config("TOKEN")
@@ -10,6 +11,7 @@ TOKEN = config("TOKEN")
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
+dp.include_router(task_router)
 dp.include_router(user_router)
 
 

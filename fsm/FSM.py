@@ -8,3 +8,8 @@ class AddUser(StatesGroup):
 
 class AythUser(StatesGroup):
     username = State()
+
+
+class AddTask(StatesGroup):
+    title = State()
+    description = State()
