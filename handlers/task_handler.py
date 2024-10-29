@@ -4,12 +4,13 @@ from aiogram.fsm.context import FSMContext
 from fsm.FSM import AddTask
 from config import db, AUTH_SESSION
 from utils.decorators import authorized_only
+from utils.func import get_tasks_list
 
 
 task_router = Router()
 
 
-@task_router.message(StateFilter(None), F.text == "Создать задачу")
+@task_router.message(StateFilter(None), F.text.lower() == "создать задачу")
 @authorized_only
 async def enter_title(message: types.Message, state: FSMContext) -> None:
     """Функция для ввода названия задачи"""
@@ -51,3 +52,27 @@ async def get_description(message: types.Message, state: FSMContext):
 async def redescription(message: types.Message, state: FSMContext) -> None:
     """Обработка некорректного ввода описания задачи"""
     await message.answer("Введите корректное описание задачи")
+
+
+@task_router.message(StateFilter(None), F.text.lower() == "все задачи")
+@authorized_only
+async def get_all_tasks(message: types.Message, state: FSMContext) -> None:
+    """Выводит список всех задач в виде инлайновых кнопок"""
+    title = "Список всех задач:"
+    await get_tasks_list(message, title)
+
+
+@task_router.message(StateFilter(None), F.text.lower() == "активные")
+@authorized_only
+async def get_tasks_active(message: types.Message, state: FSMContext) -> None:
+    """Выводит список активных задач в виде инлайновых кнопок"""
+    title = "Список активных задач:"
+    await get_tasks_list(message, title, 0)
+
+
+@task_router.message(StateFilter(None), F.text.lower() == "завершенные")
+@authorized_only
+async def get_tasks_completed(message: types.Message, state: FSMContext) -> None:
+    """Выводит список завершенных задач в виде инлайновых кнопок"""
+    title = "Список завершенных задач:"
+    await get_tasks_list(message, title, 1)

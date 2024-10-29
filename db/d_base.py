@@ -60,11 +60,24 @@ class Database:
                 (user_id, title, description),
             )
 
-    def get_tasks(self, user_id: int) -> List[Tuple[int, int, str, str, int]]:
+    def get_all_tasks(self, user_id: int) -> List[Tuple[int, int, str, str, int]]:
         """Получение всех задач пользователя."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM tasks WHERE user_id = ?", (user_id,))
+            tasks = cursor.fetchall()
+        return tasks
+
+    def get_tasks(
+        self, user_id: int, status: int
+    ) -> List[Tuple[int, int, str, str, int]]:
+        """Получение активных или завершенных задач пользователя."""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT * FROM tasks WHERE user_id = ? AND status = ?",
+                (user_id, status),
+            )
             tasks = cursor.fetchall()
         return tasks
 
