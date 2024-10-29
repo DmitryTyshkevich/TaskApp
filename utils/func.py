@@ -8,11 +8,10 @@ async def get_tasks_list(
 ) -> None:
     """Функция для вывода задач в виде инлайновых кнопок"""
     username = AUTH_SESSION.get(message.from_user.id)
-    user_id = db.get_user(username)[0]
     tasks = (
-        db.get_tasks(user_id, status)
+        db.get_tasks(username, status)
         if status is not None
-        else db.get_all_tasks(user_id)
+        else db.get_all_tasks(username)
     )
     title = title if tasks else "Задач нет"
     await message.answer(title, reply_markup=button_list_tasks(tasks))

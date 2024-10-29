@@ -104,4 +104,9 @@ async def enter_username(message: types.Message, state: FSMContext) -> None:
 @user_router.message()
 async def other(message: types.Message) -> None:
     """Обработчик неосмысленного ввода пользователем"""
-    await message.answer("Выберите действие или введите команду /start")
+    if AUTH_SESSION.get(message.from_user.id) is not None:
+        await message.answer("Выберите действие:", reply_markup=reply_keyboard)
+    else:
+        await message.answer(
+            "Пройдите регистрацию или авторизацию:", reply_markup=start_button
+        )

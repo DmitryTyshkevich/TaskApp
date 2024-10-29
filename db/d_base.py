@@ -25,11 +25,11 @@ class Database:
                 """
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
+                username TEXT NOT NULL,
                 title TEXT NOT NULL,
                 description TEXT,
                 status INTEGER DEFAULT 0,
-                FOREIGN KEY (user_id) REFERENCES users(user_id)
+                FOREIGN KEY (username) REFERENCES users(username)
             )
             """
             )
@@ -51,37 +51,37 @@ class Database:
             user = cursor.fetchone()
         return user
 
-    def add_task(self, user_id: int, title: str, description: str) -> None:
+    def add_task(self, username: str, title: str, description: str) -> None:
         """Добавить новую задачу для пользователя."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "INSERT INTO tasks (user_id, title, description) VALUES (?, ?, ?)",
-                (user_id, title, description),
+                "INSERT INTO tasks (username, title, description) VALUES (?, ?, ?)",
+                (username, title, description),
             )
 
-    def get_all_tasks(self, user_id: int) -> List[Tuple[int, int, str, str, int]]:
+    def get_all_tasks(self, username: str) -> List[Tuple[int, str, str, str, int]]:
         """Получить все задачи пользователя."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM tasks WHERE user_id = ?", (user_id,))
+            cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
             tasks = cursor.fetchall()
         return tasks
 
     def get_tasks(
-        self, user_id: int, status: int
-    ) -> List[Tuple[int, int, str, str, int]]:
+        self, username: str, status: int
+    ) -> List[Tuple[int, str, str, str, int]]:
         """Получить активные или завершенные задачи пользователя."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * FROM tasks WHERE user_id = ? AND status = ?",
-                (user_id, status),
+                "SELECT * FROM tasks WHERE username = ? AND status = ?",
+                (username, status),
             )
             tasks = cursor.fetchall()
         return tasks
 
-    def get_task(self, task_id: int) -> Optional[Tuple[int, int, str, str, int]]:
+    def get_task(self, task_id: int) -> Optional[Tuple[int, str, str, str, int]]:
         """Получить конкретную задачу"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()

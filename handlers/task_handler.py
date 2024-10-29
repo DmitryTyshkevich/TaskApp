@@ -39,10 +39,9 @@ async def get_description(message: types.Message, state: FSMContext):
     if not len(message.text) <= 5:
         description = message.text
         username = AUTH_SESSION.get(message.from_user.id)
-        user_id = db.get_user(username)[0]
         data = await state.get_data()
         title = data.get("title")
-        db.add_task(user_id, title, description)
+        db.add_task(username, title, description)
         await message.answer("Задача добавлена!")
         await state.clear()
     else:
