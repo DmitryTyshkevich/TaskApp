@@ -1,6 +1,6 @@
 from aiogram import types
 from config import AUTH_SESSION, db
-from keyboard.inline import kb_list_tasks
+from keyboard.inline import button_list_tasks
 
 
 async def get_tasks_list(
@@ -15,4 +15,4 @@ async def get_tasks_list(
         else db.get_all_tasks(user_id)
     )
     title = title if tasks else "Задач нет"
-    await message.answer(title, reply_markup=kb_list_tasks(tasks))
+    await message.answer(title, reply_markup=button_list_tasks(tasks))

@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Callable
+from typing import Callable, Union
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from config import AUTH_SESSION
@@ -11,14 +11,30 @@ def authorized_only(func: Callable) -> Callable:
 
     @wraps(func)
     async def wrapper(
-        message: types.Message, state: FSMContext, *args, **kwargs
+        update: Union[types.Message, types.CallbackQuery],
+        state: FSMContext,
+        *args,
+        **kwargs
     ) -> None:
-        user_id = message.from_user.id
-        if AUTH_SESSION.get(user_id) is not None:
-            return await func(message, state, *args, **kwargs)
-        await message.answer(
-            "Вы не авторизованы. Пожалуйста, пройдите авторизацию.",
-            reply_markup=start_button,
+
+        user_id = (
+            update.from_user.id
+            if isinstance(update, types.Message)
+            else update.message.chat.id
         )
+
+        if AUTH_SESSION.get(user_id) is not None:
+            return await func(update, state, *args, **kwargs)
+
+        if isinstance(update, types.Message):
+            await update.answer(
+                "Вы не авторизованы. Пожалуйста, пройдите авторизацию.",
+                reply_markup=start_button,
+            )
+        elif isinstance(update, types.CallbackQuery):
+            await update.message.answer(
+                "Вы не авторизованы. Пожалуйста, пройдите авторизацию.",
+                reply_markup=start_button,
+            )
 
     return wrapper

@@ -88,11 +88,20 @@ async def enter_username_for_auth(message: types.Message, state: FSMContext) -> 
         await message.answer("Вы успешно авторизовались", reply_markup=reply_keyboard)
         await state.clear()
     else:
-        await message.answer("Совпадений не найдено, пройдите регистрацию либо повторите попытку:", reply_markup=start_button)
+        await message.answer(
+            "Совпадений не найдено, пройдите регистрацию либо повторите попытку:",
+            reply_markup=start_button,
+        )
         await state.clear()
 
 
 @user_router.message(AythUser.username)
 async def enter_username(message: types.Message, state: FSMContext) -> None:
-    """Обработчик некорректного ввода логина при авторизации""" 
+    """Обработчик некорректного ввода логина при авторизации"""
     await message.answer("Введите логин:")
+
+
+@user_router.message()
+async def other(message: types.Message) -> None:
+    """Обработчик неосмысленного ввода пользователем"""
+    await message.answer("Выберите действие или введите команду /start")

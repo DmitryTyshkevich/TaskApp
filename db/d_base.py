@@ -35,7 +35,7 @@ class Database:
             )
 
     def add_user(self, username: str, name: str) -> None:
-        """Добавление нового пользователя в базу данных."""
+        """Добавить нового пользователя в базу данных."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -44,7 +44,7 @@ class Database:
             )
 
     def get_user(self, username: str) -> Optional[Tuple[int, str, str]]:
-        """Получение пользователя по его логину."""
+        """Получить пользователя по его логину."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
@@ -52,7 +52,7 @@ class Database:
         return user
 
     def add_task(self, user_id: int, title: str, description: str) -> None:
-        """Добавление новой задачи для пользователя."""
+        """Добавить новую задачу для пользователя."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -61,7 +61,7 @@ class Database:
             )
 
     def get_all_tasks(self, user_id: int) -> List[Tuple[int, int, str, str, int]]:
-        """Получение всех задач пользователя."""
+        """Получить все задачи пользователя."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM tasks WHERE user_id = ?", (user_id,))
@@ -71,7 +71,7 @@ class Database:
     def get_tasks(
         self, user_id: int, status: int
     ) -> List[Tuple[int, int, str, str, int]]:
-        """Получение активных или завершенных задач пользователя."""
+        """Получить активные или завершенные задачи пользователя."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -81,8 +81,16 @@ class Database:
             tasks = cursor.fetchall()
         return tasks
 
+    def get_task(self, task_id: int) -> Optional[Tuple[int, int, str, str, int]]:
+        """Получить конкретную задачу"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+            task = cursor.fetchone()
+        return task
+
     def update_task_status(self, task_id: int, status: int) -> None:
-        """Обновление статуса задачи."""
+        """Обновить статуса задачи."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(

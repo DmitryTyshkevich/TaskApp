@@ -3,6 +3,7 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from fsm.FSM import AddTask
 from config import db, AUTH_SESSION
+from keyboard.inline import task_control
 from utils.decorators import authorized_only
 from utils.func import get_tasks_list
 
@@ -76,3 +77,44 @@ async def get_tasks_completed(message: types.Message, state: FSMContext) -> None
     """Выводит список завершенных задач в виде инлайновых кнопок"""
     title = "Список завершенных задач:"
     await get_tasks_list(message, title, 1)
+
+
+@task_router.callback_query(StateFilter(None), F.data.startswith("id_"))
+@authorized_only
+async def get_task(callback: types.CallbackQuery, state: FSMContext) -> None:
+    """Вывод конкретной задачи"""
+    await callback.answer()
+    task_id = int(callback.data.split("_")[-1])
+    task = db.get_task(task_id)
+    if task is None:
+        await callback.message.answer("Задача не найдена.")
+        return
+    title = task[2]
+    description = task[3]
+    status = task[-1]
+    status_text = "✅ Завершенная" if status else "⏳ Активная"
+    await callback.message.answer(
+        f"<strong>Название задачи:</strong> {title}\n<strong>Статус:</strong> {status_text}\n\n<strong>Описание задачи:</strong>\n{description}",
+        reply_markup=task_control(task_id, status),
+    )
+
+
+@task_router.callback_query(StateFilter(None), F.data.startswith("del_"))
+@authorized_only
+async def del_task(callback: types.CallbackQuery, state: FSMContext) -> None:
+    """Удалить задачу"""
+    task_id = int(callback.data.split("_")[-1])
+    db.delete_task(task_id)
+    await callback.message.delete()
+    await callback.message.answer("Задача удалена")
+
+
+@task_router.callback_query(StateFilter(None), F.data.startswith("status_"))
+@authorized_only
+async def change_status(callback: types.CallbackQuery, state: FSMContext) -> None:
+    """Изменить статус"""
+    _, current_status, task_id = callback.data.split("_")
+    status = 1 if not int(current_status) else 0
+    db.update_task_status(int(task_id), int(status))
+    await callback.message.delete()
+    await callback.message.answer("Статус изменен")
