@@ -3,7 +3,7 @@ from typing import Callable, Union
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from config import AUTH_SESSION
-from keyboard.inline import start_button
+from fsm.FSM import AythUser
 
 
 def authorized_only(func: Callable) -> Callable:
@@ -26,15 +26,13 @@ def authorized_only(func: Callable) -> Callable:
         if AUTH_SESSION.get(user_id) is not None:
             return await func(update, state, *args, **kwargs)
 
+        text = "Вы не авторизованы. Пожалуйста, введите логин:"
+
         if isinstance(update, types.Message):
-            await update.answer(
-                "Вы не авторизованы. Пожалуйста, пройдите авторизацию.",
-                reply_markup=start_button,
-            )
+            await update.answer(text)
+            await state.set_state(AythUser.username)
         elif isinstance(update, types.CallbackQuery):
-            await update.message.answer(
-                "Вы не авторизованы. Пожалуйста, пройдите авторизацию.",
-                reply_markup=start_button,
-            )
+            await update.message.answer(text)
+            await state.set_state(AythUser.username)
 
     return wrapper

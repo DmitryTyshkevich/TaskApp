@@ -3,6 +3,9 @@ from typing import Optional, List, Tuple
 
 
 class Database:
+    """Класс для управления взаимодействием с базой данных SQLite, содержащей
+    таблицы для хранения информации о пользователях и их задачах."""
+
     def __init__(self, db_path: str) -> None:
         """Инициализация соединения с базой данных."""
         self.db_path = db_path

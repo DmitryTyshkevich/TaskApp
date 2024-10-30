@@ -7,7 +7,6 @@ from handlers.user_handler import user_router
 from handlers.task_handler import task_router
 
 
-
 TOKEN = config("TOKEN")
 
 
@@ -19,6 +18,7 @@ dp.include_router(user_router)
 
 
 async def main() -> None:
+    """Основная асинхронная функция для запуска бота"""
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 

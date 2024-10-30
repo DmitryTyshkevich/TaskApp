@@ -13,5 +13,5 @@ reply_keyboard = types.ReplyKeyboardMarkup(
         ],
     ],
     resize_keyboard=True,
-    one_time_keyboard=False
+    one_time_keyboard=False,
 )

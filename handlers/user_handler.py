@@ -88,11 +88,7 @@ async def enter_username_for_auth(message: types.Message, state: FSMContext) -> 
         await message.answer("Вы успешно авторизовались", reply_markup=reply_keyboard)
         await state.clear()
     else:
-        await message.answer(
-            "Совпадений не найдено, пройдите регистрацию либо повторите попытку:",
-            reply_markup=start_button,
-        )
-        await state.clear()
+        await message.answer("Совпадений не найдено, повторите попытку:")
 
 
 @user_router.message(AythUser.username)
