@@ -8,7 +8,7 @@ class AddUser(StatesGroup):
     username = State()
 
 
-class AythUser(StatesGroup):
+class AuthUser(StatesGroup):
     """Состояния для авторизации пользователя"""
 
     username = State()

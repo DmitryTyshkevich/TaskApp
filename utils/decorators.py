@@ -3,7 +3,7 @@ from typing import Callable, Union
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from config import AUTH_SESSION
-from fsm.FSM import AythUser
+from fsm.FSM import AuthUser
 
 
 def authorized_only(func: Callable) -> Callable:
@@ -30,9 +30,9 @@ def authorized_only(func: Callable) -> Callable:
 
         if isinstance(update, types.Message):
             await update.answer(text)
-            await state.set_state(AythUser.username)
+            await state.set_state(AuthUser.username)
         elif isinstance(update, types.CallbackQuery):
             await update.message.answer(text)
-            await state.set_state(AythUser.username)
+            await state.set_state(AuthUser.username)
 
     return wrapper

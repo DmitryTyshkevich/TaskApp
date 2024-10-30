@@ -23,7 +23,7 @@ def button_list_tasks(
         keyboard.add(
             types.InlineKeyboardButton(text=text, callback_data=f"id_{task_id}")
         )
-    return keyboard.adjust(3).as_markup()
+    return keyboard.adjust(1).as_markup()
 
 
 def task_control(task_id: int, status: int) -> types.InlineKeyboardMarkup:

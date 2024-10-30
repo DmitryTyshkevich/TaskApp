@@ -1,7 +1,7 @@
 from aiogram import F, types, Router
 from aiogram.filters import CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
-from fsm.FSM import AddUser, AythUser
+from fsm.FSM import AddUser, AuthUser
 from keyboard.inline import start_button
 from keyboard.reply import reply_keyboard
 from config import AUTH_SESSION, db
@@ -75,10 +75,10 @@ async def aythentication(callback: types.CallbackQuery, state: FSMContext) -> No
     """Обработчик инлайновой кнопки для авторизации"""
     await callback.answer()
     await callback.message.answer("Введите логин:")
-    await state.set_state(AythUser.username)
+    await state.set_state(AuthUser.username)
 
 
-@user_router.message(AythUser.username, F.text)
+@user_router.message(AuthUser.username, F.text)
 async def enter_username_for_auth(message: types.Message, state: FSMContext) -> None:
     """Функция для обработки логина при авторизации"""
     user_id = message.from_user.id
@@ -91,7 +91,7 @@ async def enter_username_for_auth(message: types.Message, state: FSMContext) -> 
         await message.answer("Совпадений не найдено, повторите попытку:")
 
 
-@user_router.message(AythUser.username)
+@user_router.message(AuthUser.username)
 async def enter_username(message: types.Message, state: FSMContext) -> None:
     """Обработчик некорректного ввода логина при авторизации"""
     await message.answer("Введите логин:")

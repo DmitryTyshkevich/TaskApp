@@ -15,7 +15,7 @@ task_router = Router()
 @authorized_only
 async def enter_title(message: types.Message, state: FSMContext) -> None:
     """Функция для ввода названия задачи"""
-    await message.answer("Введите название задачи")
+    await message.answer("Введите название задачи:")
     await state.set_state(AddTask.title)
 
 
@@ -24,14 +24,14 @@ async def get_title(message: types.Message, state: FSMContext) -> None:
     """Функция для получения названия задачи"""
     title = message.text
     await state.update_data(title=title)
-    await message.answer("Теперь введите описание задачи")
+    await message.answer("Теперь введите описание задачи:")
     await state.set_state(AddTask.description)
 
 
 @task_router.message(AddTask.title)
 async def retitle(message: types.Message, state: FSMContext) -> None:
     """Обработка некорректного ввода названия задачи"""
-    await message.answer("Введите корректное название задачи")
+    await message.answer("Введите корректное название задачи:")
 
 
 @task_router.message(AddTask.description, F.text)
@@ -45,13 +45,13 @@ async def get_description(message: types.Message, state: FSMContext):
         await message.answer("Задача добавлена!")
         await state.clear()
     else:
-        await message.answer("Введите более содержательное описание")
+        await message.answer("Введите более содержательное описание:")
 
 
 @task_router.message(AddTask.description)
 async def redescription(message: types.Message, state: FSMContext) -> None:
     """Обработка некорректного ввода описания задачи"""
-    await message.answer("Введите корректное описание задачи")
+    await message.answer("Введите корректное описание задачи:")
 
 
 @task_router.message(StateFilter(None), F.text.lower() == "все задачи")
